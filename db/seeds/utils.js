@@ -1,5 +1,8 @@
 exports.createRef = (data, refObjKey, refObjValue) => {
     if(data.length === 0) {
-        return {}
+        return {};
     }
+
+    let output = data.map(el => ({[el[refObjKey]]: el[refObjValue]}) )
+    return output[0];
 }
