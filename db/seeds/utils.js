@@ -3,6 +3,6 @@ exports.createRef = (data, refObjKey, refObjValue) => {
         return {};
     }
 
-    let output = data.map(el => ({[el[refObjKey]]: el[refObjValue]}) )
-    return output[0];
+    let output = data.map(el => [ el[refObjKey], el[refObjValue] ] )
+    return Object.fromEntries(output)
 }
