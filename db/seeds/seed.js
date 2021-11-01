@@ -1,4 +1,4 @@
-const { createAllTables, dropTableIfExists } = require("./seed-functions.js");
+const { createAllTables, dropTableIfExists, insertAllData } = require("./seed-functions.js");
 
 
 const seed = (data) => {
@@ -12,7 +12,7 @@ const seed = (data) => {
         .then(() => createAllTables())
 
         //insert data
-        
+        .then(() => insertAllData(data))
 
         //catch errors
         .catch(err => console.log(err))
