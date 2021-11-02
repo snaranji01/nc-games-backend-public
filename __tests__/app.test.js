@@ -94,6 +94,51 @@ describe('API', () => {
                         })
                 })
             })
+
+            describe('PATCH request', () => {
+                test('status:200 - Increments/decrements review_votes of review with specified review_id by amount specified in request body, then responds with updated review object, on "review" key.', () => {
+                    return request(app)
+                        .patch('/api/reviews/1/')
+                        .send({ inc_votes: 10 })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .then(({ body: { review } }) => {
+                            expect(review).toEqual({
+                                review_id: 1,
+                                title: 'Agricola',
+                                designer: 'Uwe Rosenberg',
+                                owner: 'mallionaire',
+                                review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                                review_body: 'Farmyard fun!',
+                                category: 'euro game',
+                                created_at: '2021-01-18T10:00:20.514Z',
+                                review_votes: 11,
+                                comment_count: 0
+                              })
+                        })
+                })
+                test('status:404 - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
+                    return request(app)
+                        .get('/api/reviews/88')
+                        .expect('Content-Type', /json/)
+                        .expect(404)
+                        .then(({ body: { msg } }) => {
+                            console.log({msg1: msg})
+                            expect(msg).toBe('404 Error, no review found with a review_id of 88')
+                        })
+                })
+                test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
+                    return request(app)
+                        .get('/api/reviews/myInvalidStringInput')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            console.log({msg2: msg})
+                            expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
+                        })
+                })
+            })
         })
     })
 })
