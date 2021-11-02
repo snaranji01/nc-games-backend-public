@@ -71,12 +71,20 @@ describe('API', () => {
                         })
                     })
             })
-            test.only('status:404 GET - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
+            test('status:404 GET - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
                 return request(app)
                     .get('/api/reviews/88')
                     .expect(404)
                     .then(({ body: { msg } }) => {
                         expect(msg).toBe('404 Error, no review found with a review_id of 88')
+                    })
+            })
+            test('status:400 GET - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
+                return request(app)
+                    .get('/api/reviews/myInvalidStringInput')
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
                     })
             })
         })
