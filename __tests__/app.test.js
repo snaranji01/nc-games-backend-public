@@ -21,6 +21,7 @@ describe('/api', () => {
                 });
         })
     }) */
+
     describe('/api/categories', () => {
         describe('GET all categories', () => {
             test('status:200, returns json response of an array of category objects under the "categories" key', () => {
@@ -28,7 +29,6 @@ describe('/api', () => {
                     .get('/api/categories')
                     .expect(200)
                     .then(({ body: { categories } }) => {
-                        console.log(categories)
                         expect(categories).toHaveLength(4);
                         categories.forEach(category => {
                             expect(category).toMatchObject({
@@ -40,4 +40,54 @@ describe('/api', () => {
             })
         })
     })
+
+
+
+    describe('/api/reviews', () => {
+        describe('/api/reviews/review:id', () => {
+            test('status:200 GET - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
+                return request(app)
+                    .get('/api/reviews/1')
+                    .expect(200)
+                    .then(({ body: { review } }) => {
+                        expect(review).toMatchObject({
+                            title: expect.any(String),
+                            designer: expect.any(String),
+                            owner: expect.any(String),
+                            review_img_url: expect.any(String),
+                            review_body: expect.any(String),
+                            category: expect.any(String),
+                            created_at: expect.any(String),
+                            review_votes: expect.any(Number),
+                            comment_count: expect.any(Number)
+                        })
+                    })
+            })
+        })
+    })
 })
+
+
+/* 
+            test('status:200, returns json response of an array of review objects under the "reviews" key', () => {
+                return request(app)
+                    .get('/api/reviews')
+                    .expect(200)
+                    .then(({ body: { reviews } }) => {
+                        expect(reviews).toHaveLength(13);
+                        reviews.forEach(review => {
+                            expect(review).toMatchObject({
+                                title: expect.any(String),
+                                designer: expect.any(String),
+                                owner: expect.any(String),
+                                review_img_url: expect.any(String),
+                                review_body: expect.any(String),
+                                category: expect.any(String),
+                                created_at: expect.any(String),
+                                review_votes: expect.any(Number),
+                                comment_count: expect.any(Number)
+                            })
+                        })
+                    })
+            })
+             */
