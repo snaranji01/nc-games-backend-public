@@ -53,39 +53,41 @@ describe('API', () => {
 
     describe('/api/reviews', () => {
         describe('/api/reviews/review:id', () => {
-            test('status:200 GET - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
-                return request(app)
-                    .get('/api/reviews/1')
-                    .expect(200)
-                    .then(({ body: { review } }) => {
-                        expect(review).toMatchObject({
-                            title: expect.any(String),
-                            designer: expect.any(String),
-                            owner: expect.any(String),
-                            review_img_url: expect.any(String),
-                            review_body: expect.any(String),
-                            category: expect.any(String),
-                            created_at: expect.any(String),
-                            review_votes: expect.any(Number),
-                            comment_count: expect.any(Number)
+            describe('GET request', () => {
+                test('status:200 - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
+                    return request(app)
+                        .get('/api/reviews/1')
+                        .expect(200)
+                        .then(({ body: { review } }) => {
+                            expect(review).toMatchObject({
+                                title: expect.any(String),
+                                designer: expect.any(String),
+                                owner: expect.any(String),
+                                review_img_url: expect.any(String),
+                                review_body: expect.any(String),
+                                category: expect.any(String),
+                                created_at: expect.any(String),
+                                review_votes: expect.any(Number),
+                                comment_count: expect.any(Number)
+                            })
                         })
-                    })
-            })
-            test('status:404 GET - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
-                return request(app)
-                    .get('/api/reviews/88')
-                    .expect(404)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).toBe('404 Error, no review found with a review_id of 88')
-                    })
-            })
-            test('status:400 GET - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
-                return request(app)
-                    .get('/api/reviews/myInvalidStringInput')
-                    .expect(400)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
-                    })
+                })
+                test('status:404 - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
+                    return request(app)
+                        .get('/api/reviews/88')
+                        .expect(404)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('404 Error, no review found with a review_id of 88')
+                        })
+                })
+                test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
+                    return request(app)
+                        .get('/api/reviews/myInvalidStringInput')
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
+                        })
+                })
             })
         })
     })
