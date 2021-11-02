@@ -12,6 +12,7 @@ describe('API', () => {
     test('status:404 for /notARoute. Returns "404 Error: Route not found" on "msg" key', () => {
         return request(app)
             .get('/notARoute')
+            .expect('Content-Type', /json/)
             .expect(404)
             .then(({ body: { msg } }) => {
                 expect(msg).toBe('404 Error: Route not found')
@@ -32,9 +33,10 @@ describe('API', () => {
 
     describe('/api/categories', () => {
         describe('GET all categories', () => {
-            test('status:200, returns json response of an array of category objects under the "categories" key', () => {
+            test('status:200 - returns json response of an array of category objects under the "categories" key', () => {
                 return request(app)
                     .get('/api/categories')
+                    .expect('Content-Type', /json/)
                     .expect(200)
                     .then(({ body: { categories } }) => {
                         expect(categories).toHaveLength(4);
@@ -57,6 +59,7 @@ describe('API', () => {
                 test('status:200 - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
                     return request(app)
                         .get('/api/reviews/1')
+                        .expect('Content-Type', /json/)
                         .expect(200)
                         .then(({ body: { review } }) => {
                             expect(review).toMatchObject({
@@ -75,6 +78,7 @@ describe('API', () => {
                 test('status:404 - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
                     return request(app)
                         .get('/api/reviews/88')
+                        .expect('Content-Type', /json/)
                         .expect(404)
                         .then(({ body: { msg } }) => {
                             expect(msg).toBe('404 Error, no review found with a review_id of 88')
@@ -83,6 +87,7 @@ describe('API', () => {
                 test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
                     return request(app)
                         .get('/api/reviews/myInvalidStringInput')
+                        .expect('Content-Type', /json/)
                         .expect(400)
                         .then(({ body: { msg } }) => {
                             expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
