@@ -8,7 +8,15 @@ const seed = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe('/api', () => {
+describe('API', () => {
+    test('status:404 for /notARoute. Returns "404 Error: Route not found" on "msg" key', () => {
+        return request(app)
+            .get('/notARoute')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+                expect(msg).toBe('404 Error: Route not found')
+            })
+    })
     /* describe('GET /api', () => {
         test('status:200, returns a JSON representation of all available endpoints from the /api', () => {
             return request(app)
