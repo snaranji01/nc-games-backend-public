@@ -71,6 +71,14 @@ describe('API', () => {
                         })
                     })
             })
+            test.only('status:404 GET - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
+                return request(app)
+                    .get('/api/reviews/88')
+                    .expect(404)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('404 Error, no review found with a review_id of 88')
+                    })
+            })
         })
     })
 })
