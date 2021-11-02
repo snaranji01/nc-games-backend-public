@@ -1,5 +1,5 @@
 const express = require('express');
-const { handle404Error, handleCustomErrors } = require('./controllers/errors.controllers.js');
+const { handle404Error, handleCustomErrors, handle500ServerError } = require('./controllers/errors.controllers.js');
 const apiRouter = require('./routes/apiRouter.js');
 const app = express();
 
@@ -11,5 +11,6 @@ app.all('*', handle404Error);
 
 app.use(handleCustomErrors)
 
+app.use(handle500ServerError)
 
 module.exports = app;
