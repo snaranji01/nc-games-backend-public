@@ -12,7 +12,6 @@ exports.selectReviewById = async (review_id) => {
                                         return {...reviewObj, comment_count }
                                     })
                             })
-    console.log(reviewObj)
     return reviewObj
 }
 

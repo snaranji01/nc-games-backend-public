@@ -1,12 +1,14 @@
-const { getCategories, getReviewById } = require('../controllers/categories.controllers.js');
+const categoriesRouter = require('./categoriesRouter.js');
+const reviewsRouter = require('./reviewsRouter.js');
 
 const apiRouter = require('express').Router();
 
 //apiRouter.get('/', getApiInfo);
 
-apiRouter.get('/categories', getCategories);
+apiRouter.use('/categories', categoriesRouter);
 
-apiRouter.get('/reviews/:review_id', getReviewById);
+apiRouter.use('/reviews', reviewsRouter);
+
 
 //apiRouter.get('/reviews', getReviews);
 
