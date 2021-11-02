@@ -1,4 +1,4 @@
-
+const { getCategories } = require('../controllers/categories.controllers.js');
 
 const apiRouter = require('express').Router();
 
