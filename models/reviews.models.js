@@ -36,7 +36,7 @@ exports.updateReviewById = async (review_id, inc_votes) => {
         return Promise.reject({
             status: 400,
             route: '/api/review/:review_id',
-            msg: `400 Error: invalid input_id, ${review_id}, provided`
+            msg: `400 Error: invalid input_id, "${review_id}", provided`
         })
     }
 
@@ -50,7 +50,7 @@ exports.updateReviewById = async (review_id, inc_votes) => {
         return Promise.reject({
             status: 404,
             route: '/api/review/:review_id',
-            msg: `404 Error, no review found with a review_id of ${review_id}`
+            msg: `404 Error, no review found with a review_id of "${review_id}"`
         })
     }
 
@@ -61,6 +61,7 @@ exports.updateReviewById = async (review_id, inc_votes) => {
 }
 
 exports.selectReviews = async (sort_by, order, category) => {
+    const columnNames = ["owner", "title", "review_id", "category", "review_img_url", "created_at", "review_votes", "comment_count"];
     const baseSelectReviewsQuery = `SELECT r.*, COUNT(c.review_id) AS "comment_count"
                                     FROM comments AS c
                                     RIGHT OUTER JOIN reviews AS r
@@ -68,6 +69,14 @@ exports.selectReviews = async (sort_by, order, category) => {
                                     GROUP BY r.review_id`
     if (!sort_by || sort_by === 'created_at') {
         selectReviewsQuery = `${baseSelectReviewsQuery} ORDER BY r.created_at`
+    } else if (columnNames.includes(sort_by)) {
+        selectReviewsQuery = `${baseSelectReviewsQuery} ORDER BY ${sort_by}`
+    } else {
+        new Promise.reject({
+            status: 400,
+            route: '/api/review',
+            msg: `400 Error: invalid sort_by query parameter, "${sort_by}", was provided`
+        })
     }
 
     if (!order) {
