@@ -1,4 +1,4 @@
-exports.createRef = (data, refObjKey, refObjValue) => {
+exports.createRefObject = (data, refObjKey, refObjValue) => {
     if(data.length === 0) {
         return {};
     }
@@ -6,3 +6,4 @@ exports.createRef = (data, refObjKey, refObjValue) => {
     let output = data.map(el => [ el[refObjKey], el[refObjValue] ] )
     return Object.fromEntries(output)
 }
+
