@@ -84,13 +84,19 @@ describe('API', () => {
 
                         })
                 })
-
-                test('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', async () => {
-                    const columnNames = ["owner", "title", "review_id", "category", "review_img_url", "created_at", "review_votes", "comment_count"];
-
-                    const promiseAssertionsArray = columnNames.map(async columnName => {
-                        await request(app)
-                        .get(`/api/reviews?sort_by=${columnName}`)
+                describe('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', () => {
+                    test.each([
+                        { column: "owner" },
+                        { column: "title" },
+                        { column: "review_id" },
+                        { column: "category" },
+                        { column: "review_img_url" },
+                        { column: "created_at" },
+                        { column: "review_votes" },
+                        { column: "comment_count" }
+                    ])('Check sort_by=$column', ({column}) => {
+                        return request(app)
+                        .get(`/api/reviews?sort_by=${column}`)
                         .expect('Content-Type', /json/)
                         .expect(200)
                         .then(({ body: { reviews } }) => {
@@ -109,14 +115,11 @@ describe('API', () => {
                                 })
                             })
 
-                            expect(reviews).toBeSortedBy(columnName, {
+                            expect(reviews).toBeSortedBy(column, {
                                 descending: true
                             })
-                            //console.log(`Evaluated test for: ${columnName}`)
                         })
-                    })
-                    await Promise.all(promiseAssertionsArray)
-
+                    });
                 })
             })
         })
@@ -209,26 +212,42 @@ describe('API', () => {
 })
 
 
-/* 
-            test('status:200, returns json response of an array of review objects under the "reviews" key', () => {
-                return request(app)
-                    .get('/api/reviews')
-                    .expect(200)
-                    .then(({ body: { reviews } }) => {
-                        expect(reviews).toHaveLength(13);
-                        reviews.forEach(review => {
-                            expect(review).toMatchObject({
-                                title: expect.any(String),
-                                designer: expect.any(String),
-                                owner: expect.any(String),
-                                review_img_url: expect.any(String),
-                                review_body: expect.any(String),
-                                category: expect.any(String),
-                                created_at: expect.any(String),
-                                review_votes: expect.any(Number),
-                                comment_count: expect.any(Number)
+
+
+
+
+// OLD 'test each sort_by parameter' Test Code Block
+//
+/* test('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', async () => {
+                    const columnNames = ["owner", "title", "review_id", "category", "review_img_url", "created_at", "review_votes", "comment_count"];
+
+                    const promiseAssertionsArray = columnNames.map(async columnName => {
+                        await request(app)
+                        .get(`/api/reviews?sort_by=${columnName}`)
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .then(({ body: { reviews } }) => {
+
+                            reviews.forEach(review => {
+                                expect(review).toMatchObject({
+                                    title: expect.any(String),
+                                    designer: expect.any(String),
+                                    owner: expect.any(String),
+                                    review_img_url: expect.any(String),
+                                    review_body: expect.any(String),
+                                    category: expect.any(String),
+                                    created_at: expect.any(String),
+                                    review_votes: expect.any(Number),
+                                    comment_count: expect.any(Number)
+                                })
                             })
+
+                            expect(reviews).toBeSortedBy(columnName, {
+                                descending: true
+                            })
+                            //console.log(`Evaluated test for: ${columnName}`)
                         })
                     })
-            })
-             */
+                    await Promise.all(promiseAssertionsArray)
+
+                }) */
