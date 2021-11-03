@@ -1,4 +1,4 @@
-const { selectReviewById, updateReviewById } = require("../models/reviews.models.js");
+const { selectReviewById, updateReviewById, selectReviews } = require("../models/reviews.models.js");
 
 
 exports.getReviewById = async (req, res, next) => {
@@ -25,8 +25,11 @@ exports.patchReviewById = async (req, res, next) => {
 
 }
 
-/* exports.getReviews = async (req,res) => {
-    const reviews = await selectReviews();
+exports.getReviews = async (req,res) => {
+
+    const { sort_by, order, category } = req.query;
+
+    const reviews = await selectReviews(sort_by, order, category);
     
     res.status(200).send({reviews});
-} */
+}
