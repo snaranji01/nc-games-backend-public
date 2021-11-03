@@ -54,6 +54,69 @@ describe('API', () => {
 
 
     describe('/api/reviews', () => {
+
+        describe("GET request", () => {
+            describe('Status:200 - Returns an Array of review Objects, on the "reviews" key', () => {
+                test('When no URL query parameters are specified, returns Array sorted in descending order by the "created_at" date', () => {
+                    return request(app)
+                        .get('/api/reviews')
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .then(({ body: { reviews } }) => {
+
+                            reviews.forEach(review => {
+                                expect(review).toMatchObject({
+                                    title: expect.any(String),
+                                    designer: expect.any(String),
+                                    owner: expect.any(String),
+                                    review_img_url: expect.any(String),
+                                    review_body: expect.any(String),
+                                    category: expect.any(String),
+                                    created_at: expect.any(String),
+                                    review_votes: expect.any(Number),
+                                    comment_count: expect.any(Number)
+                                })
+                            })
+
+                            expect(reviews).toBeSortedBy('created_at', {
+                                descending: true
+                            })
+
+                        })
+                })
+
+                /* test('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', () => {
+                    const columnNames = ["owner", "title", "review_id", "category", "review_img_url", "created_at", "review_votes", "comment_count"];
+
+                    return request(app)
+                        .get(`/api/reviews?sort_by=${columnName}`)
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .then(({ body: { reviews } }) => {
+
+                            reviews.forEach(review => {
+                                expect(review).toMatchObject({
+                                    title: expect.any(String),
+                                    designer: expect.any(String),
+                                    owner: expect.any(String),
+                                    review_img_url: expect.any(String),
+                                    review_body: expect.any(String),
+                                    category: expect.any(String),
+                                    created_at: expect.any(String),
+                                    review_votes: expect.any(Number),
+                                    comment_count: expect.any(Number)
+                                })
+                            })
+
+                            expect(reviews).toBeSortedBy(`columnName`, {
+                                descending: true
+                            })
+                        })
+
+                }) */
+            })
+        })
+
         describe('/api/reviews/review:id', () => {
             describe('GET request', () => {
                 test('status:200 - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
@@ -115,7 +178,7 @@ describe('API', () => {
                                 created_at: '2021-01-18T10:00:20.514Z',
                                 review_votes: 11,
                                 comment_count: 0
-                              })
+                            })
                         })
                 })
                 test('status:404 - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
@@ -124,7 +187,6 @@ describe('API', () => {
                         .expect('Content-Type', /json/)
                         .expect(404)
                         .then(({ body: { msg } }) => {
-                            console.log({msg1: msg})
                             expect(msg).toBe('404 Error, no review found with a review_id of 88')
                         })
                 })
@@ -134,7 +196,6 @@ describe('API', () => {
                         .expect('Content-Type', /json/)
                         .expect(400)
                         .then(({ body: { msg } }) => {
-                            console.log({msg2: msg})
                             expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
                         })
                 })
