@@ -84,6 +84,12 @@ exports.selectReviews = async (sort_by, order, category) => {
         selectReviewsQuery = `${selectReviewsQuery} DESC;`
     } else if (order === 'asc') {
         selectReviewsQuery = `${selectReviewsQuery} ASC;`
+    } else {
+        return Promise.reject({
+            status: 400,
+            route: '/api/review',
+            msg: `400 Error: invalid order query parameter, ${order}, was provided`
+        })
     }
     const { rows: reviewsArray } = await db.query(selectReviewsQuery);
     reviewsArray.forEach(review => review.comment_count = parseInt(review.comment_count))
