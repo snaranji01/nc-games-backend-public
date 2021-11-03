@@ -3,10 +3,10 @@ exports.handle404Error = (req, res, next) => {
 }
 
 exports.handleCustomErrors = (err, req, res, next) => {
-    if (err.status === 404 && err.route === '/api/review/:review_id') {
+    if (err.status === 404) {
         res.status(404).send({ msg: err.msg })
     }
-    else if (err.status === 400 && err.route === '/api/review/:review_id') {
+    else if (err.status === 400) {
         res.status(400).send({ msg: err.msg })
     } else {
         next(err)
