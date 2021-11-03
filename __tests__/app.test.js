@@ -202,13 +202,22 @@ describe('API', () => {
                 })
             })
             describe('Status:400 - When provided an invalid input, returns a 400 response and corresponding error message on the "msg" key', () => {
-                test('Invalid sort_by query parameter. Returns error message: "400 Error: invalid sort_by query parameter, *insertPassedSortByQueryHere*, was provided"', () => {
+                test('Invalid "sort_by" query parameter. Returns error message: "400 Error: invalid sort_by query parameter, *insertPassedSortByQueryHere*, was provided"', () => {
                     return request(app)
                         .get('/api/reviews?sort_by=daffodil')
                         .expect('Content-Type', /json/)
                         .expect(400)
                         .then(({ body: { msg } }) => {
                             expect(msg).toBe('400 Error: invalid sort_by query parameter, daffodil, was provided')
+                        })
+                })
+                test('Invalid "order" query parameter. Returns error message: "400 Error: invalid order query parameter, *insertPassedOrderQueryHere*, was provided"', () => {
+                    return request(app)
+                        .get('/api/reviews?order=inverted')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid order query parameter, inverted, was provided')
                         })
                 })
             })
