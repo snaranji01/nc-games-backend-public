@@ -84,7 +84,7 @@ describe('API', () => {
 
                         })
                 })
-                describe('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', () => {
+                describe('When only a sort_by parameter is specified, returns Array sorted in descending order by specified column', () => {
                     test.each([
                         { column: "owner" },
                         { column: "title" },
@@ -120,6 +120,85 @@ describe('API', () => {
                                 })
                             })
                     });
+                })
+                describe('When sort_by and order are specified, returns Array sorted in the correct order by specified column', () => {
+                    describe('Descending order specified', () => {
+                        test.each([
+                            { column: "owner" },
+                            { column: "title" },
+                            { column: "review_id" },
+                            { column: "category" },
+                            { column: "review_img_url" },
+                            { column: "created_at" },
+                            { column: "review_votes" },
+                            { column: "comment_count" }
+                        ])('Check sort_by=$column&order=desc', ({ column }) => {
+                            return request(app)
+                                .get(`/api/reviews?sort_by=${column}&order=desc`)
+                                .expect('Content-Type', /json/)
+                                .expect(200)
+                                .then(({ body: { reviews } }) => {
+
+                                    reviews.forEach(review => {
+                                        expect(review).toMatchObject({
+                                            title: expect.any(String),
+                                            designer: expect.any(String),
+                                            owner: expect.any(String),
+                                            review_img_url: expect.any(String),
+                                            review_body: expect.any(String),
+                                            category: expect.any(String),
+                                            created_at: expect.any(String),
+                                            review_votes: expect.any(Number),
+                                            comment_count: expect.any(Number)
+                                        })
+                                    })
+
+                                    expect(reviews).toBeSortedBy(column, {
+                                        descending: true
+                                    })
+                                })
+                        });
+                    })
+                    describe('Ascending order specified', () => {
+                        test.each([
+                            { column: "owner" },
+                            { column: "title" },
+                            { column: "review_id" },
+                            { column: "category" },
+                            { column: "review_img_url" },
+                            { column: "created_at" },
+                            { column: "review_votes" },
+                            { column: "comment_count" }
+                        ])('Check sort_by=$column&order=asc', ({ column }) => {
+                            return request(app)
+                                .get(`/api/reviews?sort_by=${column}&order=asc`)
+                                .expect('Content-Type', /json/)
+                                .expect(200)
+                                .then(({ body: { reviews } }) => {
+
+                                    reviews.forEach(review => {
+                                        expect(review).toMatchObject({
+                                            title: expect.any(String),
+                                            designer: expect.any(String),
+                                            owner: expect.any(String),
+                                            review_img_url: expect.any(String),
+                                            review_body: expect.any(String),
+                                            category: expect.any(String),
+                                            created_at: expect.any(String),
+                                            review_votes: expect.any(Number),
+                                            comment_count: expect.any(Number)
+                                        })
+                                    })
+                                    const ascendingCompareFunc = (a, b) => {
+                                        return a - b
+                                    }
+                                    expect(reviews).toBeSortedBy(column, {
+                                        compare: ascendingCompareFunc,
+                                    })
+                                })
+                        });
+                    })
+
                 })
             })
             describe('Status:400 - When provided an invalid input, returns a 400 response and corresponding error message on the "msg" key', () => {
