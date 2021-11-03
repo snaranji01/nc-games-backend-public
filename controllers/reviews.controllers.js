@@ -25,11 +25,14 @@ exports.patchReviewById = async (req, res, next) => {
 
 }
 
-exports.getReviews = async (req,res) => {
+exports.getReviews = async (req, res, next) => {
+    try {
+        const { sort_by, order, category } = req.query;
 
-    const { sort_by, order, category } = req.query;
+        const reviews = await selectReviews(sort_by, order, category);
 
-    const reviews = await selectReviews(sort_by, order, category);
-    
-    res.status(200).send({reviews});
+        res.status(200).send({ reviews });
+    } catch (error) {
+        next(error)
+    }
 }

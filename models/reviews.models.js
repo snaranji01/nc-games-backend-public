@@ -36,23 +36,24 @@ exports.updateReviewById = async (review_id, inc_votes) => {
         return Promise.reject({
             status: 400,
             route: '/api/review/:review_id',
-            msg: `400 Error: invalid input_id, "${review_id}", provided`
+            msg: `400 Error: invalid input_id, ${review_id}, provided`
         })
     }
 
     const { rows: [responseCountObj] } = await db.query(`SELECT review_votes FROM reviews WHERE review_id = $1;`, [review_id]);
+    
+    if (responseCountObj === undefined) {
+        return Promise.reject({
+            status: 404,
+            route: '/api/review/:review_id',
+            msg: `404 Error, no review found with a review_id of ${review_id}`
+        })
+    }
+
     const newReviewUpvotes = responseCountObj.review_votes + parseInt(inc_votes);
 
     const { rows: reviewObjQueryResponse } = await db.query(`UPDATE reviews SET review_votes = $1 WHERE review_id = $2 RETURNING *;`, [newReviewUpvotes, review_id]);
     const { rows: commentCountQueryResponse } = await db.query(`SELECT COUNT(*) FROM comments WHERE review_id = $1;`, [review_id]);
-
-    if (reviewObjQueryResponse.length === 0) {
-        return Promise.reject({
-            status: 404,
-            route: '/api/review/:review_id',
-            msg: `404 Error, no review found with a review_id of "${review_id}"`
-        })
-    }
 
     const reviewObj = reviewObjQueryResponse[0];
     const commentCount = parseInt(commentCountQueryResponse[0].count)
@@ -72,10 +73,10 @@ exports.selectReviews = async (sort_by, order, category) => {
     } else if (columnNames.includes(sort_by)) {
         selectReviewsQuery = `${baseSelectReviewsQuery} ORDER BY ${sort_by}`
     } else {
-        new Promise.reject({
+        return Promise.reject({
             status: 400,
             route: '/api/review',
-            msg: `400 Error: invalid sort_by query parameter, "${sort_by}", was provided`
+            msg: `400 Error: invalid sort_by query parameter, ${sort_by}, was provided`
         })
     }
 
