@@ -80,8 +80,10 @@ exports.selectReviews = async (sort_by, order, category) => {
         })
     }
 
-    if (!order) {
+    if (!order || order === 'desc') {
         selectReviewsQuery = `${selectReviewsQuery} DESC;`
+    } else if (order === 'asc') {
+        selectReviewsQuery = `${selectReviewsQuery} ASC;`
     }
     const { rows: reviewsArray } = await db.query(selectReviewsQuery);
     reviewsArray.forEach(review => review.comment_count = parseInt(review.comment_count))
