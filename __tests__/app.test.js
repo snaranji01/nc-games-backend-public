@@ -85,10 +85,11 @@ describe('API', () => {
                         })
                 })
 
-                /* test('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', () => {
+                test('When only a sort_by parameter is specified, returns Array of review Objects sorted in descending order by specified column', async () => {
                     const columnNames = ["owner", "title", "review_id", "category", "review_img_url", "created_at", "review_votes", "comment_count"];
 
-                    return request(app)
+                    const promiseAssertionsArray = columnNames.map(async columnName => {
+                        await request(app)
                         .get(`/api/reviews?sort_by=${columnName}`)
                         .expect('Content-Type', /json/)
                         .expect(200)
@@ -108,12 +109,15 @@ describe('API', () => {
                                 })
                             })
 
-                            expect(reviews).toBeSortedBy(`columnName`, {
+                            expect(reviews).toBeSortedBy(columnName, {
                                 descending: true
                             })
+                            //console.log(`Evaluated test for: ${columnName}`)
                         })
+                    })
+                    await Promise.all(promiseAssertionsArray)
 
-                }) */
+                })
             })
         })
 
