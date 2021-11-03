@@ -61,30 +61,19 @@ exports.updateReviewById = async (review_id, inc_votes) => {
 }
 
 exports.selectReviews = async (sort_by, order, category) => {
-    let selectReviewsQuery;
-    if (!sort_by) {
-        selectReviewsQuery = `SELECT * FROM reviews ORDER BY created_at`
+    const baseSelectReviewsQuery = `SELECT r.*, COUNT(c.review_id) AS "comment_count"
+                                    FROM comments AS c
+                                    RIGHT OUTER JOIN reviews AS r
+                                    ON c.review_id = r.review_id
+                                    GROUP BY r.review_id`
+    if (!sort_by || sort_by === 'created_at') {
+        selectReviewsQuery = `${baseSelectReviewsQuery} ORDER BY r.created_at`
     }
 
     if (!order) {
         selectReviewsQuery = `${selectReviewsQuery} DESC;`
     }
-
     const { rows: reviewsArray } = await db.query(selectReviewsQuery);
-
-    const commentCountsQuery = `SELECT review_id, COUNT(*) AS "commentCounts" FROM comments GROUP BY review_id;`
-    const { rows: commentCountsResponse } = await db.query(commentCountsQuery);
-
-    const referenceArray = createRefObject(commentCountsResponse, 'review_id','commentCounts');
-
-    const reviewsArrayWithCounts = reviewsArray.map(review => {
-        const comment_count = parseInt( referenceArray[ review.review_id.toString() ] || 0 )
-        const reviewEntry = {
-            ...review,
-            comment_count
-        }
-        return reviewEntry
-    })
-
-    return reviewsArrayWithCounts
+    reviewsArray.forEach(review => review.comment_count = parseInt(review.comment_count))
+    return reviewsArray;
 }
