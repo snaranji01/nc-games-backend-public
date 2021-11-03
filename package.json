@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "bc-nc-games",
   "main": "index.js",
+  "jest":{
+      "setupFilesAfterEnv" : ["jest-sorted"]
+  },
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
@@ -28,6 +31,7 @@
   },
   "devDependencies": {
     "jest": "^27.3.1",
+    "jest-sorted": "^1.0.12",
     "supertest": "^6.1.6"
   }
 }
