@@ -94,34 +94,46 @@ describe('API', () => {
                         { column: "created_at" },
                         { column: "review_votes" },
                         { column: "comment_count" }
-                    ])('Check sort_by=$column', ({column}) => {
+                    ])('Check sort_by=$column', ({ column }) => {
                         return request(app)
-                        .get(`/api/reviews?sort_by=${column}`)
-                        .expect('Content-Type', /json/)
-                        .expect(200)
-                        .then(({ body: { reviews } }) => {
+                            .get(`/api/reviews?sort_by=${column}`)
+                            .expect('Content-Type', /json/)
+                            .expect(200)
+                            .then(({ body: { reviews } }) => {
 
-                            reviews.forEach(review => {
-                                expect(review).toMatchObject({
-                                    title: expect.any(String),
-                                    designer: expect.any(String),
-                                    owner: expect.any(String),
-                                    review_img_url: expect.any(String),
-                                    review_body: expect.any(String),
-                                    category: expect.any(String),
-                                    created_at: expect.any(String),
-                                    review_votes: expect.any(Number),
-                                    comment_count: expect.any(Number)
+                                reviews.forEach(review => {
+                                    expect(review).toMatchObject({
+                                        title: expect.any(String),
+                                        designer: expect.any(String),
+                                        owner: expect.any(String),
+                                        review_img_url: expect.any(String),
+                                        review_body: expect.any(String),
+                                        category: expect.any(String),
+                                        created_at: expect.any(String),
+                                        review_votes: expect.any(Number),
+                                        comment_count: expect.any(Number)
+                                    })
+                                })
+
+                                expect(reviews).toBeSortedBy(column, {
+                                    descending: true
                                 })
                             })
-
-                            expect(reviews).toBeSortedBy(column, {
-                                descending: true
-                            })
-                        })
                     });
                 })
             })
+            describe('Status:400 - When provided an invalid input, returns a 400 response and corresponding error message on the "msg" key', () => {
+                test('Invalid sort_by query parameter. Returns error message: "400 Error: invalid sort_by query parameter, *insertPassedSortByQueryHere*, was provided"', () => {
+                    return request(app)
+                        .get('/api/reviews?sort_by=daffodil')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid sort_by query parameter, daffodil, was provided')
+                        })
+                })
+            })
+
         })
 
         describe('/api/reviews/review:id', () => {
@@ -190,7 +202,9 @@ describe('API', () => {
                 })
                 test('status:404 - returns the error message "404 Error, no review found with a review_id of *insert review_id here*" under the "msg" key', () => {
                     return request(app)
-                        .get('/api/reviews/88')
+                        .patch('/api/reviews/88')
+                        .send({ inc_votes: 10 })
+                        .set('Accept', 'application/json')
                         .expect('Content-Type', /json/)
                         .expect(404)
                         .then(({ body: { msg } }) => {
@@ -199,7 +213,9 @@ describe('API', () => {
                 })
                 test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
                     return request(app)
-                        .get('/api/reviews/myInvalidStringInput')
+                        .patch('/api/reviews/myInvalidStringInput')
+                        .send({ inc_votes: 10 })
+                        .set('Accept', 'application/json')
                         .expect('Content-Type', /json/)
                         .expect(400)
                         .then(({ body: { msg } }) => {
