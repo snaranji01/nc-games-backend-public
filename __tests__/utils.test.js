@@ -1,4 +1,4 @@
-const { createRef } = require("../db/seeds/utils.js");
+const { createRef } = require("../db/utils.js");
 
 
 describe('createRef', () => {

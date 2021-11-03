@@ -1,7 +1,6 @@
 const format = require('pg-format');
 const { query } = require('../connection.js');
 const db = require('../connection.js');
-const { createRef } = require('./utils.js');
 
 exports.dropTableIfExists = tableName => {
     if (!['users', 'categories', 'reviews', 'comments'].includes(tableName)) {
