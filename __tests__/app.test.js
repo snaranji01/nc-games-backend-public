@@ -312,6 +312,15 @@ describe('API', () => {
                         expect(msg).toBe('400 Error: invalid order query parameter, inverted, was provided')
                     })
             })
+            test('Invalid "category" query parameter. Returns error message: "400 Error: invalid category query parameter, *insertPassedCategoryQueryHere*, was provided"', () => {
+                return request(app)
+                    .get('/api/reviews?category=myInvalidCategory')
+                    .expect('Content-Type', /json/)
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('400 Error: invalid category query parameter, myInvalidCategory, was provided')
+                    })
+            })
         })
 
     })
