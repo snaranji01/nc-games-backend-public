@@ -14,8 +14,8 @@ exports.createAllTables = () => {
     // create 'users' table
     const queryStrUsers = `CREATE TABLE users(
         username TEXT UNIQUE PRIMARY KEY,
-        name TEXT NOT NULL,
-        avatar_url TEXT NOT NULL
+        name TEXT,
+        avatar_url TEXT
     );`
     return db
             .query(queryStrUsers)
