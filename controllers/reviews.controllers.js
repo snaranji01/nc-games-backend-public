@@ -1,6 +1,5 @@
 const { selectReviewById, updateReviewById, selectReviews, selectReviewCommentsById, addReviewCommentById } = require("../models/reviews.models.js");
 
-
 exports.getReviewById = async (req, res, next) => {
     try {
         const { review_id } = req.params;
@@ -59,7 +58,7 @@ exports.postReviewCommentByReviewId = async (req, res, next) => {
         const { review_id } = req.params;
         const { username, body } = req.body;
         const newReviewComment = await addReviewCommentById(review_id, username, body);
-        res.status(200).send({ newReviewComment })
+        res.status(201).send({ newReviewComment })
     } catch (error) {
         next(error)
     }
