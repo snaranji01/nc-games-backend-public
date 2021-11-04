@@ -466,7 +466,6 @@ describe('API', () => {
                     .expect('Content-Type', /json/)
                     .expect(201)
                     .then(({ body: { newReviewComment } }) => {
-                        console.log(newReviewComment)
                         expect(newReviewComment.comment_id).toBe(7);
                         expect(newReviewComment.body).toBe('Great review!');
                         expect(newReviewComment.comment_votes).toBe(0);
@@ -476,7 +475,7 @@ describe('API', () => {
                     })
             })
             describe('Status:400 - invalid input. Returns error message on "msg" key', () => {
-                test.only('When provided review_id is not a number', () => {
+                test('When provided review_id is not a number', () => {
                     return request(app)
                         .post('/api/reviews/myInvalidStringInput/comments')
                         .send({ username: "mallionaire", body: "Great review!" })
@@ -513,57 +512,34 @@ describe('API', () => {
             })
 
         })
-
-        /* describe('DELETE request', () => {
-            test('status:204 - deletes entry and sends no response', () => {
-                return request(app)
-                    .delete('/api/reviews/2/comments')
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .then(({ body: { newReviewComment } }) => {
-                        console.log(newReviewComment)
-                        expect(newReviewComment.comment_id).toBe(7);
-                        expect(newReviewComment.body).toBe('Great review!');
-                        expect(newReviewComment.comment_votes).toBe(0);
-                        expect(newReviewComment.author).toBe('mallionaire');
-                        expect(newReviewComment.review_id).toBe(2);
-                        expect(typeof newReviewComment.created_at).toBe('string');
-                    })
-            })
-            describe('Status:400 - invalid input. Returns error message on "msg" key', () => {
-                test('When provided review_id is not a number', () => {
-                    return request(app)
-                        .get('/api/reviews/myInvalidStringInput')
-                        .expect('Content-Type', /json/)
-                        .expect(400)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).toBe('400 Error: invalid review_id, myInvalidStringInput, provided')
-                        })
+    })
+    describe('/api/comments/:comment_id', () => {
+        test('status:204 - When passed valid comment_id, deletes entry and sends no 204 status back (no response body)', () => {
+            return request(app)
+                .delete('/api/comments/1')
+                .expect(204)
+                .then(({ body }) => {
+                    expect(body).toEqual({});
                 })
-            })
-            describe('Status:404 - review_id or username does not exist. Returns error message on "msg" key', () => {
-                test('Provided review_id does not exist', () => {
-                    return request(app)
-                        .get('/api/reviews/88/comments')
-                        .expect('Content-Type', /json/)
-                        .expect(404)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).toBe('404 Error: provided review_id, 88, does not exist')
-                        })
+        })
+        test('status:400 - When provided comment_id that is not a number, returns error message on "msg" key', () => {
+            return request(app)
+                .delete('/api/comments/myInvalidStringInput')
+                .expect('Content-Type', /json/)
+                .expect(400)
+                .then(({ body: { msg } }) => {
+                    expect(msg).toBe('400 Error: invalid comment_id, myInvalidStringInput, provided')
                 })
-                test('Provided body contains "username" that does not exist', () => {
-                    return request(app)
-                        .post('/api/reviews/2/comments')
-                        .send({ username: "usernameDoesNotExist", body: "Great review!" })
-                        .expect('Content-Type', /json/)
-                        .expect(404)
-                        .then(({ body: { msg } }) => {
-                            expect(msg).toBe('404 Error: no user exists for provided username, usernameDoesNotExist');
-                        })
+        })
+        test('status:404 - Provided comment_id does not exist, returns error message on "msg" key', () => {
+            return request(app)
+                .delete('/api/comments/88')
+                .expect('Content-Type', /json/)
+                .expect(404)
+                .then(({ body: { msg } }) => {
+                    expect(msg).toBe('404 Error: No comment with the provided comment_id, 88, exists')
                 })
-            })
-
-        }) */
+        })
     })
 })
 
