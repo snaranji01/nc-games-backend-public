@@ -441,6 +441,15 @@ describe('API', () => {
                     })
 
             })
+            test('status:200 - returns an empty array under the "reviewComments" key when a valid review_id is provided that has no comments.', () => {
+                return request(app)
+                    .get('/api/reviews/1/comments')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .then(({ body: { reviewComments } }) => {
+                        expect(reviewComments).toEqual([]);
+                    })
+            })
             test('status:404 - returns the error message "404 Error: provided review_id, *insert review_id here*, does not exist" on the "msg" key', () => {
                 return request(app)
                     .get('/api/reviews/88/comments')
