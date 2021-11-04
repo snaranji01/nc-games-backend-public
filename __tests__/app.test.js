@@ -458,12 +458,12 @@ describe('API', () => {
             })
         })
         describe('POST request', () => {
-            test('status:200 - Receives request body of form {author: *username*, body: *commentBody*} where the user exists, and returns newly created comment as response on "newReviewComment" key.', () => {
+            test('status:201 - Receives request body of form {author: *username*, body: *commentBody*} where the user exists, and returns newly created comment as response on "newReviewComment" key.', () => {
                 return request(app)
                     .post('/api/reviews/2/comments')
                     .send({ username: "mallionaire", body: "Great review!" })
                     .expect('Content-Type', /json/)
-                    .expect(200)
+                    .expect(201)
                     .then(({ body: { newReviewComment } }) => {
                         console.log(newReviewComment)
                         expect(newReviewComment.comment_id).toBe(7);
