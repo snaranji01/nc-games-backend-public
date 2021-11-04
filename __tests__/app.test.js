@@ -292,39 +292,40 @@ describe('API', () => {
                 })
 
             })
+            describe('Status:400 - When provided an invalid input, returns a 400 response and corresponding error message on the "msg" key', () => {
+                test('Invalid "sort_by" query parameter. Returns error message: "400 Error: invalid sort_by query parameter, *insertPassedSortByQueryHere*, was provided"', () => {
+                    return request(app)
+                        .get('/api/reviews?sort_by=daffodil')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid sort_by query parameter, daffodil, was provided')
+                        })
+                })
+                test('Invalid "order" query parameter. Returns error message: "400 Error: invalid order query parameter, *insertPassedOrderQueryHere*, was provided"', () => {
+                    return request(app)
+                        .get('/api/reviews?order=inverted')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid order query parameter, inverted, was provided')
+                        })
+                })
+                test('Invalid "category" query parameter. Returns error message: "400 Error: invalid category query parameter, *insertPassedCategoryQueryHere*, was provided"', () => {
+                    return request(app)
+                        .get('/api/reviews?category=myInvalidCategory')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe('400 Error: invalid category query parameter, myInvalidCategory, was provided')
+                        })
+                })
+            })
         })
-        describe('Status:400 - When provided an invalid input, returns a 400 response and corresponding error message on the "msg" key', () => {
-            test('Invalid "sort_by" query parameter. Returns error message: "400 Error: invalid sort_by query parameter, *insertPassedSortByQueryHere*, was provided"', () => {
-                return request(app)
-                    .get('/api/reviews?sort_by=daffodil')
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid sort_by query parameter, daffodil, was provided')
-                    })
-            })
-            test('Invalid "order" query parameter. Returns error message: "400 Error: invalid order query parameter, *insertPassedOrderQueryHere*, was provided"', () => {
-                return request(app)
-                    .get('/api/reviews?order=inverted')
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid order query parameter, inverted, was provided')
-                    })
-            })
-            test('Invalid "category" query parameter. Returns error message: "400 Error: invalid category query parameter, *insertPassedCategoryQueryHere*, was provided"', () => {
-                return request(app)
-                    .get('/api/reviews?category=myInvalidCategory')
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid category query parameter, myInvalidCategory, was provided')
-                    })
-            })
-        })
+
 
     })
-
+    // /api/reviews/review:id
     describe('/api/reviews/review:id', () => {
         describe('GET request', () => {
             test('status:200 - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
@@ -355,13 +356,13 @@ describe('API', () => {
                         expect(msg).toBe('404 Error, no review found with a review_id of 88')
                     })
             })
-            test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
+            test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid review_id, *insertInvalidInputHere*, provided', () => {
                 return request(app)
                     .get('/api/reviews/myInvalidStringInput')
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
+                        expect(msg).toBe('400 Error: invalid review_id, myInvalidStringInput, provided')
                     })
             })
         })
@@ -400,7 +401,7 @@ describe('API', () => {
                         expect(msg).toBe('404 Error, no review found with a review_id of 88')
                     })
             })
-            test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid input_id, *insertInvalidInputHere*, provided', () => {
+            test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid review_id, *insertInvalidInputHere*, provided', () => {
                 return request(app)
                     .patch('/api/reviews/myInvalidStringInput')
                     .send({ inc_votes: 10 })
@@ -408,7 +409,54 @@ describe('API', () => {
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid input_id, myInvalidStringInput, provided')
+                        expect(msg).toBe('400 Error: invalid review_id, myInvalidStringInput, provided')
+                    })
+            })
+        })
+
+    })
+    // /api/reviews/review:id/comments
+    describe('/api/reviews/review:id/comments', () => {
+        //GET
+        describe('GET request', () => {
+            test('status:200 - returns array of comments for review with review_id specified in the URL parameter, under the "reviewComments" key', () => {
+                return request(app)
+                    .get('/api/reviews/2/comments')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .then(({ body: { reviewComments } }) => {
+                        if (reviewComments) {
+                            reviewComments.forEach(reviewComment => {
+                                expect(reviewComment).toMatchObject({
+                                    comment_id: expect.any(Number),
+                                    body: expect.any(String),
+                                    comment_votes: expect.any(Number),
+                                    author: expect.any(String),
+                                    review_id: expect.any(Number),
+                                    created_at: expect.any(String),
+                                })
+                            })
+                        }
+
+                    })
+
+            })
+            test('status:404 - returns the error message "404 Error: provided review_id, *insert review_id here*, does not exist" on the "msg" key', () => {
+                return request(app)
+                    .get('/api/reviews/88/comments')
+                    .expect('Content-Type', /json/)
+                    .expect(404)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('404 Error: provided review_id, 88, does not exist')
+                    })
+            })
+            test('status:400 - When provided review_id is not a number, returns the error message "400 Error: invalid review_id, *insertInvalidInputHere*, provided', () => {
+                return request(app)
+                    .get('/api/reviews/myInvalidStringInput')
+                    .expect('Content-Type', /json/)
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('400 Error: invalid review_id, myInvalidStringInput, provided')
                     })
             })
         })
