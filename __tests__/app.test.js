@@ -462,6 +462,7 @@ describe('API', () => {
                 return request(app)
                     .post('/api/reviews/2/comments')
                     .send({ username: "mallionaire", body: "Great review!" })
+                    .set('Accept', 'application/json')
                     .expect('Content-Type', /json/)
                     .expect(201)
                     .then(({ body: { newReviewComment } }) => {
@@ -475,9 +476,11 @@ describe('API', () => {
                     })
             })
             describe('Status:400 - invalid input. Returns error message on "msg" key', () => {
-                test('When provided review_id is not a number', () => {
+                test.only('When provided review_id is not a number', () => {
                     return request(app)
-                        .get('/api/reviews/myInvalidStringInput')
+                        .post('/api/reviews/myInvalidStringInput/comments')
+                        .send({ username: "mallionaire", body: "Great review!" })
+                        .set('Accept', 'application/json')
                         .expect('Content-Type', /json/)
                         .expect(400)
                         .then(({ body: { msg } }) => {
@@ -488,7 +491,9 @@ describe('API', () => {
             describe('Status:404 - review_id or user does not exist. Returns error message on "msg" key', () => {
                 test('Provided review_id does not exist', () => {
                     return request(app)
-                        .get('/api/reviews/88/comments')
+                        .post('/api/reviews/88/comments')
+                        .send({ username: "mallionaire", body: "Great review!" })
+                        .set('Accept', 'application/json')
                         .expect('Content-Type', /json/)
                         .expect(404)
                         .then(({ body: { msg } }) => {
@@ -512,8 +517,7 @@ describe('API', () => {
         /* describe('DELETE request', () => {
             test('status:204 - deletes entry and sends no response', () => {
                 return request(app)
-                    .post('/api/reviews/2/comments')
-                    .send({ username: "mallionaire", body: "Great review!" })
+                    .delete('/api/reviews/2/comments')
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .then(({ body: { newReviewComment } }) => {
