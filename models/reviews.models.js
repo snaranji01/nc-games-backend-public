@@ -72,15 +72,22 @@ exports.selectReviews = async (sort_by, order, category) => {
     const {rows: validCategoriesResponse} = await db.query(`SELECT slug FROM categories;`);
     const validCategories = validCategoriesResponse.map(responseEl => responseEl.slug);
 
-    if (validCategories.includes(category)) {
+    if(!category) {
+        //pass
+    } else if (validCategories.includes(category)) {
         if(/'{1}/.test(category)) {
             replacedApostropheCategory = category.replace(/'{1}/g, "''");
             selectReviewsQuery = `${selectReviewsQuery} WHERE r.category='${replacedApostropheCategory}'`;
         } else {
             selectReviewsQuery = `${selectReviewsQuery} WHERE r.category='${category}'`;
         }
-        
-    } 
+    } else {
+        return Promise.reject({
+            status: 400,
+            route: '/api/review',
+            msg: `400 Error: invalid category query parameter, ${category}, was provided`
+        })
+    }
 
 
 
