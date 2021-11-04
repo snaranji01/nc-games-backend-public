@@ -21,7 +21,6 @@ exports.handlePSQLErrors = (err, req, res, next) => {
             err
         };
         res.status(400).send(errResponse)
-        next(errResponse)
 
     } else {
         next(err)
