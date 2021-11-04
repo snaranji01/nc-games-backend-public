@@ -19,18 +19,13 @@ describe('API', () => {
                 expect(msg).toBe('404 Error: Route not found')
             })
     })
-    /* describe('GET /api', () => {
+    describe('GET /api', () => {
         test('status:200, returns a JSON representation of all available endpoints from the /api', () => {
             return request(app)
                 .get('/api')
                 .expect(200)
-                .then(({body: {}}) => {
-                    expect(body).objectContaining({
-                        description: expect.any(String),
-                    });
-                });
         })
-    }) */
+    })
 
     describe('/api/categories', () => {
         describe('GET all categories', () => {
@@ -51,8 +46,6 @@ describe('API', () => {
             })
         })
     })
-
-
 
     describe('/api/reviews', () => {
 
@@ -232,8 +225,6 @@ describe('API', () => {
                                     expect(review.category).not.toBe('dexterity');
                                     expect(review.category).not.toBe('social deduction');
                                 })
-
-
                             })
                     })
                     test.each([
@@ -325,7 +316,6 @@ describe('API', () => {
 
 
     })
-    // /api/reviews/review:id
     describe('/api/reviews/review:id', () => {
         describe('GET request', () => {
             test('status:200 - returns the review with a review_id specified in the URL parameter, under the "review" key', () => {
@@ -415,9 +405,7 @@ describe('API', () => {
         })
 
     })
-    // /api/reviews/review:id/comments
     describe('/api/reviews/review:id/comments', () => {
-        //GET
         describe('GET request', () => {
             test('status:200 - returns array of comments for review with review_id specified in the URL parameter, under the "reviewComments" key', () => {
                 return request(app)
@@ -522,7 +510,7 @@ describe('API', () => {
         })
 
         /* describe('DELETE request', () => {
-            test('status:204 - Receives request body of form {author: *username*, body: *commentBody*} where the user exists, and returns newly created comment as response on "newReviewComment" key.', () => {
+            test('status:204 - deletes entry and sends no response', () => {
                 return request(app)
                     .post('/api/reviews/2/comments')
                     .send({ username: "mallionaire", body: "Great review!" })
@@ -549,7 +537,7 @@ describe('API', () => {
                         })
                 })
             })
-            describe('Status:404 - review_id or user does not exist. Returns error message on "msg" key', () => {
+            describe('Status:404 - review_id or username does not exist. Returns error message on "msg" key', () => {
                 test('Provided review_id does not exist', () => {
                     return request(app)
                         .get('/api/reviews/88/comments')
