@@ -546,7 +546,7 @@ describe('API', () => {
     })
     describe('/api/users', () => {
         describe('GET request', () => {
-            test('status:200 - returns an array of all user objects', () => {
+            test('status:200 - returns an array of all user objects, attached to the "users" key', () => {
                 return request(app)
                     .get('/api/users')
                     .expect(200)
@@ -559,6 +559,32 @@ describe('API', () => {
                             })
                         })
                         expect(users).toHaveLength(4);
+                    })
+            })
+        })
+
+    })
+
+    describe('/api/users/:username', () => {
+        describe('GET request', () => {
+            test('status:200 - returns the user objects with provided "username", attached to the "user" key', () => {
+                return request(app)
+                    .get('/api/users/mallionaire')
+                    .expect(200)
+                    .then(({ body: { user } }) => {
+                        expect(user).toEqual({
+                            username: 'mallionaire',
+                            name: 'haz',
+                            avatar_url: 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+                        })
+                    })
+            })
+            test('status:404 - When provided a username that does not exist, returns error message on "msg" key: "404 Error: no user found with the provided username, *providedUsernameHere*"', () => {
+                return request(app)
+                    .get('/api/users/notAUser')
+                    .expect(404)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe("404 Error: no user found with the provided username, notAUser")
                     })
             })
         })
