@@ -11,16 +11,19 @@ exports.selectReviewById = async (review_id) => {
         })
     }
 
-    const { rows: reviewObjQueryResponse } = await db.query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id]);
-    const { rows: commentCountQueryResponse } = await db.query(`SELECT COUNT(*) FROM comments WHERE review_id = $1;`, [review_id]);
-
-    if (reviewObjQueryResponse.length === 0) {
+    const { rows: selectAllReviewIdsResponse } = await db.query(`SELECT review_id FROM reviews;`);
+    const existingReviewIds = selectAllReviewIdsResponse.map(responseEl => responseEl.review_id.toString());
+    if (!existingReviewIds.includes(review_id)) {
         return Promise.reject({
             status: 404,
             route: '/api/reviews/:review_id',
             msg: `404 Error, no review found with a review_id of ${review_id}`
         })
     }
+
+
+    const { rows: reviewObjQueryResponse } = await db.query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id]);
+    const { rows: commentCountQueryResponse } = await db.query(`SELECT COUNT(*) FROM comments WHERE review_id = $1;`, [review_id]);
 
     const reviewObj = reviewObjQueryResponse[0];
     const commentCount = parseInt(commentCountQueryResponse[0].count)
