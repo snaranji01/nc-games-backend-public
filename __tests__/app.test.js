@@ -514,32 +514,55 @@ describe('API', () => {
         })
     })
     describe('/api/comments/:comment_id', () => {
-        test('status:204 - When passed valid comment_id, deletes entry and sends no 204 status back (no response body)', () => {
-            return request(app)
-                .delete('/api/comments/1')
-                .expect(204)
-                .then(({ body }) => {
-                    expect(body).toEqual({});
-                })
+        describe('DELETE request', () => {
+            test('status:204 - When passed valid comment_id, deletes entry and sends no 204 status back (no response body)', () => {
+                return request(app)
+                    .delete('/api/comments/1')
+                    .expect(204)
+                    .then(({ body }) => {
+                        expect(body).toEqual({});
+                    })
+            })
+            test('status:400 - When provided comment_id that is not a number, returns error message on "msg" key', () => {
+                return request(app)
+                    .delete('/api/comments/myInvalidStringInput')
+                    .expect('Content-Type', /json/)
+                    .expect(400)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('400 Error: invalid comment_id, myInvalidStringInput, provided')
+                    })
+            })
+            test('status:404 - Provided comment_id does not exist, returns error message on "msg" key', () => {
+                return request(app)
+                    .delete('/api/comments/88')
+                    .expect('Content-Type', /json/)
+                    .expect(404)
+                    .then(({ body: { msg } }) => {
+                        expect(msg).toBe('404 Error: No comment with the provided comment_id, 88, exists')
+                    })
+            })
         })
-        test('status:400 - When provided comment_id that is not a number, returns error message on "msg" key', () => {
-            return request(app)
-                .delete('/api/comments/myInvalidStringInput')
-                .expect('Content-Type', /json/)
-                .expect(400)
-                .then(({ body: { msg } }) => {
-                    expect(msg).toBe('400 Error: invalid comment_id, myInvalidStringInput, provided')
-                })
+
+    })
+    describe('/api/users', () => {
+        describe('GET request', () => {
+            test('status:200 - returns an array of all user objects', () => {
+                return request(app)
+                    .get('/api/users')
+                    .expect(200)
+                    .then(({ body: { users } }) => {
+                        users.forEach(user => {
+                            expect(user).toMatchObject({
+                                username: expect.any(String),
+                                name: expect.any(String),
+                                avatar_url: expect.any(String)
+                            })
+                        })
+                        expect(users).toHaveLength(4);
+                    })
+            })
         })
-        test('status:404 - Provided comment_id does not exist, returns error message on "msg" key', () => {
-            return request(app)
-                .delete('/api/comments/88')
-                .expect('Content-Type', /json/)
-                .expect(404)
-                .then(({ body: { msg } }) => {
-                    expect(msg).toBe('404 Error: No comment with the provided comment_id, 88, exists')
-                })
-        })
+
     })
 })
 
