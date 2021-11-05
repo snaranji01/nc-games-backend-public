@@ -119,7 +119,7 @@ exports.selectReviews = async (sort_by, order, category) => {
 
 
 exports.selectReviewCommentsById = async (review_id) => {
-    
+
     if (!(/^[\d]+$/.test(review_id))) {
         return Promise.reject({
             status: 400,
@@ -128,27 +128,19 @@ exports.selectReviewCommentsById = async (review_id) => {
         })
     }
 
-    
-    try {
-        const { rows: allReviewIdsResponse } = await db.query(`SELECT review_id from reviews;`);
-        const validReviewIds = allReviewIdsResponse.map(responseElement => responseElement.review_id.toString());
-        if (!validReviewIds.includes(review_id)) {
-            return Promise.reject({
-                status: 404,
-                route: '/api/reviews/:review_id/comments',
-                msg: `404 Error: provided review_id, ${review_id}, does not exist`
-            })
-        }
-        try {
-            const { rows: reviewCommentsArray } = await db.query(`SELECT * FROM comments WHERE review_id=$1;`, [review_id]);
-            return reviewCommentsArray;
-        } catch (error) {
-            console.log(error)
-        }
-
-    } catch (error) {
-        console.log(error)
+    const { rows: allReviewIdsResponse } = await db.query(`SELECT review_id from reviews;`);
+    const validReviewIds = allReviewIdsResponse.map(responseElement => responseElement.review_id.toString());
+    if (!validReviewIds.includes(review_id)) {
+        return Promise.reject({
+            status: 404,
+            route: '/api/reviews/:review_id/comments',
+            msg: `404 Error: provided review_id, ${review_id}, does not exist`
+        })
     }
+
+    const { rows: reviewCommentsArray } = await db.query(`SELECT * FROM comments WHERE review_id=$1;`, [review_id]);
+    return reviewCommentsArray;
+
 }
 
 exports.addReviewCommentById = async (review_id, username, body) => {
@@ -160,43 +152,28 @@ exports.addReviewCommentById = async (review_id, username, body) => {
         })
     }
 
-    
-    try {
-        const { rows: allReviewIdsResponse } = await db.query(`SELECT review_id from reviews;`);
-        const validReviewIds = allReviewIdsResponse.map(responseElement => responseElement.review_id.toString());
-        if (!validReviewIds.includes(review_id)) {
-            return Promise.reject({
-                status: 404,
-                route: '/api/reviews/:review_id/comments',
-                msg: `404 Error: provided review_id, ${review_id}, does not exist`
-            })
-        }
-        try {
-            const { rows: allUsernamesResponse } = await db.query(`SELECT username FROM users;`);
-            const existingUsernames = allUsernamesResponse.map(responseEl => responseEl.username);
-
-            if(!existingUsernames.includes(username)) {
-                return Promise.reject({
-                    status: 404,
-                    route: '/api/reviews/:review_id/comments',
-                    msg: `404 Error: no user exists for provided username, ${username}`
-                })
-            }
-
-            try {
-                const insertQuery = `INSERT INTO comments(body, author, review_id, created_at) VALUES ($1, $2, $3, $4) RETURNING *;`;
-                const insertQueryValues = [body, username, review_id, new Date(Date.now())];
-                const { rows: [newCommentObj] } = await db.query(insertQuery, insertQueryValues);
-                
-                return newCommentObj;
-                
-            } catch (error) {
-                console.log(error)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    } catch (error) {
-        console.log(error)
+    const { rows: allReviewIdsResponse } = await db.query(`SELECT review_id from reviews;`);
+    const validReviewIds = allReviewIdsResponse.map(responseElement => responseElement.review_id.toString());
+    if (!validReviewIds.includes(review_id)) {
+        return Promise.reject({
+            status: 404,
+            route: '/api/reviews/:review_id/comments',
+            msg: `404 Error: provided review_id, ${review_id}, does not exist`
+        })
     }
+    const { rows: allUsernamesResponse } = await db.query(`SELECT username FROM users;`);
+    const existingUsernames = allUsernamesResponse.map(responseEl => responseEl.username);
+
+    if (!existingUsernames.includes(username)) {
+        return Promise.reject({
+            status: 404,
+            route: '/api/reviews/:review_id/comments',
+            msg: `404 Error: no user exists for provided username, ${username}`
+        })
+    }
+    const insertQuery = `INSERT INTO comments(body, author, review_id, created_at) VALUES ($1, $2, $3, $4) RETURNING *;`;
+    const insertQueryValues = [body, username, review_id, new Date(Date.now())];
+    const { rows: [newCommentObj] } = await db.query(insertQuery, insertQueryValues);
+
+    return newCommentObj;
 }
