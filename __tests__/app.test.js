@@ -542,6 +542,116 @@ describe('API', () => {
                     })
             })
         })
+        describe('PATCH request', () => {
+            describe(`Status 200`, () => {
+                describe('Increments/decrements comment_votes by the amount specified by "inc_votes" value in request body', () => {
+                    test('Increments by 3', () => {
+                        return request(app)
+                            .patch('/api/comments/1')
+                            .send({ inc_votes: 3 })
+                            .set('Accept', 'application/json')
+                            .expect('Content-Type', /json/)
+                            .expect(200)
+                            .then(({ body: { updatedComment } }) => {
+                                expect(updatedComment).toEqual({
+                                    comment_id: 1,
+                                    body: 'I loved this game too!',
+                                    comment_votes: 19,
+                                    author: 'bainesface',
+                                    review_id: 2,
+                                    created_at: '2017-11-22T12:43:33.389Z',
+                                })
+                            })
+                    })
+                    test('Decrements by 2', () => {
+                        return request(app)
+                            .patch('/api/comments/2')
+                            .send({ inc_votes: -2 })
+                            .set('Accept', 'application/json')
+                            .expect('Content-Type', /json/)
+                            .expect(200)
+                            .then(({ body: { updatedComment } }) => {
+                                expect(updatedComment).toEqual({
+                                    comment_id: 2,
+                                    body: 'My dog loved this game too!',
+                                    comment_votes: 11,
+                                    author: 'mallionaire',
+                                    review_id: 3,
+                                    created_at: '2021-01-18T10:09:05.410Z',
+                                })
+                            })
+                    })
+                })
+                test('Works as normal when extra key-value pairs are included in request body', () => {
+                    return request(app)
+                            .patch('/api/comments/2')
+                            .send({ inc_votes: 2 , extra_key: ['some', 'more', 'information']})
+                            .set('Accept', 'application/json')
+                            .expect('Content-Type', /json/)
+                            .expect(200)
+                            .then(({ body: { updatedComment } }) => {
+                                expect(updatedComment).toEqual({
+                                    comment_id: 2,
+                                    body: 'My dog loved this game too!',
+                                    comment_votes: 15,
+                                    author: 'mallionaire',
+                                    review_id: 3,
+                                    created_at: '2021-01-18T10:09:05.410Z',
+                                })
+                            })
+                })
+            })
+            
+            describe('status:404', () => {
+                test('When provided a comment_id that does not exist, returns error message on "msg" key: "404 Error: no comment found with the provided comment_id, *providedCommentIdHere*"', () => {
+                    return request(app)
+                        .patch('/api/comments/88')
+                        .send({ inc_votes: 1 })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(404)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe("404 Error Not Found: No comment with the provided comment_id was found")
+                        })
+                })
+            })
+            describe('status:400', () => {
+                test('Invalid comment_id (not a number)', () => {
+                    return request(app)
+                        .patch('/api/comments/notACommentId')
+                        .send({ inc_votes: 1 })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe("400 Error Bad Request: invalid comment_id")
+                        })
+                })
+                test(`No 'inc_votes' key on request body`, () => {
+                    return request(app)
+                        .patch('/api/comments/2')
+                        .send({ increase_votes: 1 })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe("400 Error Bad Request: Missing 'inc_votes' in request body")
+                        })
+                })
+                test(`Invalid 'inc_votes' value on request body (not a number) `, () => {
+                    return request(app)
+                        .patch('/api/comments/2')
+                        .send({ inc_votes: 'notANumber' })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(400)
+                        .then(({ body: { msg } }) => {
+                            expect(msg).toBe(`400 Error Bad Request: Invalid 'inc_votes' value in request body`)
+                        })
+                })
+
+            })
+        })
 
     })
     describe('/api/users', () => {
@@ -588,7 +698,6 @@ describe('API', () => {
                     })
             })
         })
-
     })
 })
 
