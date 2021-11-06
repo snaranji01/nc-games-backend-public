@@ -1,6 +1,16 @@
 const db = require("../db/connection.js");
 
 //utils
+const checkCommentIdIsNumber = async (comment_id) => {
+    if ( /^[\d]+$/.test(comment_id) ) {
+        //pass
+    } else {
+        return Promise.reject({
+            status: 400,
+            msg: `400 Error Bad Request: invalid comment_id`
+        })
+    }
+}
 const checkCommentIdExists = async comment_id => {
     const { rows: selectCommentIdsResponse } = await db.query(`SELECT comment_id FROM comments;`);
     const existingCommentIds = selectCommentIdsResponse.map(responseEl => responseEl.comment_id.toString());
@@ -14,36 +24,13 @@ const checkCommentIdExists = async comment_id => {
         })
     }
 }
-
-const checkCommentIdIsNumber = async (comment_id) => {
-    if ( /^[\d]+$/.test(comment_id) ) {
-        //pass
-    } else {
-        return Promise.reject({
-            status: 400,
-            msg: `400 Error Bad Request: invalid comment_id`
-        })
-    }
-}
 ///////////////////
 
 exports.removeCommentByCommentId = async (comment_id) => {
-    if (!(/^[\d]+$/.test(comment_id))) {
-        return Promise.reject({
-            status: 400,
-            msg: `400 Error: invalid comment_id, ${comment_id}, provided`
-        })
-    }
-
-    const { rows: selectCommentIdsResponse } = await db.query(`SELECT comment_id FROM comments;`);
-    const validCommentIds = selectCommentIdsResponse.map(responseEl => responseEl.comment_id.toString());
-
-    if (!validCommentIds.includes(comment_id)) {
-        return Promise.reject({
-            status: 404,
-            msg: `404 Error: No comment with the provided comment_id, ${comment_id}, exists`
-        })
-    }
+    // 400 Error: check if comment_id is a number
+    await checkCommentIdIsNumber(comment_id);
+    // 404 Error: check comment_id exists in comments table
+    await checkCommentIdExists(comment_id);
 
     await db.query(`DELETE FROM comments WHERE comment_id=$1`, [comment_id]);
     return
@@ -51,26 +38,9 @@ exports.removeCommentByCommentId = async (comment_id) => {
 
 exports.updateCommentByCommentId = async (comment_id, inc_votes) => {
     // 400 Error : check if comment_id is a number
-    if ( /^[\d]+$/.test(comment_id) ) {
-        //pass
-    } else {
-        return Promise.reject({
-            status: 400,
-            msg: `400 Error Bad Request: invalid comment_id`
-        })
-    }
+    await checkCommentIdIsNumber(comment_id);
     // 404 Error: check comment_id exists in comments table
-    const { rows: selectCommentIdsResponse } = await db.query(`SELECT comment_id FROM comments;`);
-    const existingCommentIds = selectCommentIdsResponse.map(responseEl => responseEl.comment_id.toString());
-
-    if (existingCommentIds.includes(comment_id)) {
-        // pass
-    } else {
-        return Promise.reject({
-            status: 404,
-            msg: `404 Error Not Found: No comment with the provided comment_id was found`
-        })
-    }
+    await checkCommentIdExists(comment_id);
 
     //check if inc_votes exists in req body
     if(inc_votes === undefined) {
