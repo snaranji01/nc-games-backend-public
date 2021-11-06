@@ -515,7 +515,7 @@ describe('API', () => {
     })
     describe('/api/comments/:comment_id', () => {
         describe('DELETE request', () => {
-            test('status:204 - When passed valid comment_id, deletes entry and sends no 204 status back (no response body)', () => {
+            test('Status 204 - When passed valid and existing comment_id, deletes entry. No response body.', () => {
                 return request(app)
                     .delete('/api/comments/1')
                     .expect(204)
@@ -523,22 +523,22 @@ describe('API', () => {
                         expect(body).toEqual({});
                     })
             })
-            test('status:400 - When provided comment_id that is not a number, returns error message on "msg" key', () => {
+            test('Status 400 - Invalid comment_id (not a number)', () => {
                 return request(app)
                     .delete('/api/comments/myInvalidStringInput')
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .then(({ body: { msg } }) => {
-                        expect(msg).toBe('400 Error: invalid comment_id, myInvalidStringInput, provided')
+                        expect(msg).toBe('400 Error Bad Request: invalid comment_id')
                     })
             })
-            test('status:404 - Provided comment_id does not exist, returns error message on "msg" key', () => {
+            test('Status 404 - No comment with this comment_id exists', () => {
                 return request(app)
                     .delete('/api/comments/88')
                     .expect('Content-Type', /json/)
                     .expect(404)
                     .then(({ body: { msg } }) => {
-                        expect(msg).toBe('404 Error: No comment with the provided comment_id, 88, exists')
+                        expect(msg).toBe('404 Error Not Found: No comment with the provided comment_id was found')
                     })
             })
         })
@@ -602,8 +602,8 @@ describe('API', () => {
                 })
             })
             
-            describe('status:404', () => {
-                test('When provided a comment_id that does not exist, returns error message on "msg" key: "404 Error: no comment found with the provided comment_id, *providedCommentIdHere*"', () => {
+            describe('Status 404', () => {
+                test('No comments with comment_id exists', () => {
                     return request(app)
                         .patch('/api/comments/88')
                         .send({ inc_votes: 1 })
@@ -615,7 +615,7 @@ describe('API', () => {
                         })
                 })
             })
-            describe('status:400', () => {
+            describe('Status 400', () => {
                 test('Invalid comment_id (not a number)', () => {
                     return request(app)
                         .patch('/api/comments/notACommentId')
