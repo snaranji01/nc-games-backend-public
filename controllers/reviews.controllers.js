@@ -3,13 +3,8 @@ const { selectReviewById, updateReviewById, selectReviews, selectReviewCommentsB
 exports.getReviewById = async (req, res, next) => {
     try {
         const { review_id } = req.params;
-        try {
-            const review = await selectReviewById(review_id)
-            res.status(200).send({ review });
-        } catch (error) {
-            next(error)
-        }
-
+        const review = await selectReviewById(review_id);
+        res.status(200).send({ review });
     } catch (error) {
         next(error)
     }
@@ -20,13 +15,8 @@ exports.patchReviewById = async (req, res, next) => {
     try {
         const { review_id } = req.params;
         const { inc_votes } = req.body;
-        try {
-            const review = await updateReviewById(review_id, inc_votes)
-            res.status(200).send({ review });
-        } catch (error) {
-            next(error)
-        }
-
+        const review = await updateReviewById(review_id, inc_votes)
+        res.status(200).send({ review });
     } catch (error) {
         next(error)
     }
