@@ -584,24 +584,24 @@ describe('API', () => {
                 })
                 test('Works as normal when extra key-value pairs are included in request body', () => {
                     return request(app)
-                            .patch('/api/comments/2')
-                            .send({ inc_votes: 2 , extra_key: ['some', 'more', 'information']})
-                            .set('Accept', 'application/json')
-                            .expect('Content-Type', /json/)
-                            .expect(200)
-                            .then(({ body: { updatedComment } }) => {
-                                expect(updatedComment).toEqual({
-                                    comment_id: 2,
-                                    body: 'My dog loved this game too!',
-                                    comment_votes: 15,
-                                    author: 'mallionaire',
-                                    review_id: 3,
-                                    created_at: '2021-01-18T10:09:05.410Z',
-                                })
+                        .patch('/api/comments/2')
+                        .send({ inc_votes: 2, extra_key: ['some', 'more', 'information'] })
+                        .set('Accept', 'application/json')
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .then(({ body: { updatedComment } }) => {
+                            expect(updatedComment).toEqual({
+                                comment_id: 2,
+                                body: 'My dog loved this game too!',
+                                comment_votes: 15,
+                                author: 'mallionaire',
+                                review_id: 3,
+                                created_at: '2021-01-18T10:09:05.410Z',
                             })
+                        })
                 })
             })
-            
+
             describe('Status 404', () => {
                 test('No comments with comment_id exists', () => {
                     return request(app)
@@ -656,7 +656,7 @@ describe('API', () => {
     })
     describe('/api/users', () => {
         describe('GET request', () => {
-            test('status:200 - returns an array of all user objects, attached to the "users" key', () => {
+            test('Status 200 - returns an array of all user objects, attached to the "users" key', () => {
                 return request(app)
                     .get('/api/users')
                     .expect(200)
@@ -674,10 +674,9 @@ describe('API', () => {
         })
 
     })
-
     describe('/api/users/:username', () => {
         describe('GET request', () => {
-            test('status:200 - returns the user objects with provided "username", attached to the "user" key', () => {
+            test('Status 200 - returns the user object with provided "username", attached to the "user" key', () => {
                 return request(app)
                     .get('/api/users/mallionaire')
                     .expect(200)
@@ -689,12 +688,12 @@ describe('API', () => {
                         })
                     })
             })
-            test('status:404 - When provided a username that does not exist, returns error message on "msg" key: "404 Error: no user found with the provided username, *providedUsernameHere*"', () => {
+            test(`Status 404: Username doesn't exist in users table`, () => {
                 return request(app)
                     .get('/api/users/notAUser')
                     .expect(404)
                     .then(({ body: { msg } }) => {
-                        expect(msg).toBe("404 Error: no user found with the provided username, notAUser")
+                        expect(msg).toBe(`404 Error Not Found: No users with the username provided was found`)
                     })
             })
         })
