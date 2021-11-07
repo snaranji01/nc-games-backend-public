@@ -1,57 +1,32 @@
 const db = require("../db/connection.js");
+const { checkStringIsPositiveInteger, checkPrimaryKeyValueExists } = require("./utils-models.js");
 
-//utils
-const checkCommentIdIsNumber = async (comment_id) => {
-    if ( /^[\d]+$/.test(comment_id) ) {
-        //pass
-    } else {
-        return Promise.reject({
-            status: 400,
-            msg: `400 Error Bad Request: invalid comment_id`
-        })
-    }
-}
-const checkCommentIdExists = async comment_id => {
-    const { rows: selectCommentIdsResponse } = await db.query(`SELECT comment_id FROM comments;`);
-    const existingCommentIds = selectCommentIdsResponse.map(responseEl => responseEl.comment_id.toString());
-
-    if (existingCommentIds.includes(comment_id)) {
-        // pass
-    } else {
-        return Promise.reject({
-            status: 404,
-            msg: `404 Error Not Found: No comment with the provided comment_id was found`
-        })
-    }
-}
-///////////////////
 
 exports.removeCommentByCommentId = async (comment_id) => {
     // 400 Error: check if comment_id is a number
-    await checkCommentIdIsNumber(comment_id);
+    await checkStringIsPositiveInteger(comment_id, 'comments');
     // 404 Error: check comment_id exists in comments table
-    await checkCommentIdExists(comment_id);
-
+    await checkPrimaryKeyValueExists('comment_id', 'comments', comment_id);
+    // carry out delete query
     await db.query(`DELETE FROM comments WHERE comment_id=$1`, [comment_id]);
-    return
 }
 
 exports.updateCommentByCommentId = async (comment_id, inc_votes) => {
-    // 400 Error : check if comment_id is a number
-    await checkCommentIdIsNumber(comment_id);
+    // 400 Error: check if comment_id is a number
+    await checkStringIsPositiveInteger(comment_id, 'comments');
     // 404 Error: check comment_id exists in comments table
-    await checkCommentIdExists(comment_id);
+    await checkPrimaryKeyValueExists('comment_id', 'comments', comment_id);
 
     //check if inc_votes exists in req body
-    if(inc_votes === undefined) {
+    if (inc_votes === undefined) {
         return Promise.reject({
             status: 400,
             msg: `400 Error Bad Request: Missing 'inc_votes' in request body`
         })
     }
-    
+
     // 400 Error: check if inc_votes value is a number (can also start with '-' character)
-    if ( /^[\d]+$/.test(inc_votes) || /^-[\d]+$/.test(inc_votes) ) {
+    if (/^[\d]+$/.test(inc_votes) || /^-[\d]+$/.test(inc_votes)) {
         // pass
     } else {
         return Promise.reject({
@@ -60,7 +35,7 @@ exports.updateCommentByCommentId = async (comment_id, inc_votes) => {
         })
     }
 
-        
+
     // retrieve existing comment at this comment_id
     const { rows: [existingCommentObj] } = await db.query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id]);
     const updatedCommentVotes = existingCommentObj.comment_votes + parseInt(inc_votes)
