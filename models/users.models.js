@@ -1,4 +1,5 @@
 const db = require("../db/connection.js");
+const { checkPrimaryKeyValueExists } = require("./utils-models.js");
 
 exports.selectUsers = async () => {
     const { rows: usersResponse } = await db.query(`SELECT * FROM users;`);
@@ -6,18 +7,9 @@ exports.selectUsers = async () => {
 }
 
 exports.selectUserByUsername = async (username) => {
-    const { rows: usersResponse } = await db.query(`SELECT * FROM users;`);
-    const existingUsernames = usersResponse.map(user => user.username);
-
-    if(!existingUsernames.includes(username)) {
-        return Promise.reject({
-            status: 404,
-            route: '/api/users/:user_id',
-            msg: `404 Error: no user found with the provided username, ${username}`
-        })
-    }
-
+    //check username exists in users table
+    await checkPrimaryKeyValueExists('username', 'users', username);
+    // run query to select user
     const { rows: [user] } = await db.query(`SELECT * FROM users WHERE username=$1`, [username]);
-    console.log(user)
     return user;
 }
