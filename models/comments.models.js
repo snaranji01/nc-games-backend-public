@@ -1,19 +1,18 @@
 const db = require("../db/connection.js");
-const { checkStringIsPositiveInteger, checkPrimaryKeyValueExists } = require("./utils-models.js");
-
+const { checkPrimaryKeyIsPositiveInteger, checkPrimaryKeyValueExists } = require("./model-utils.js");
 
 exports.removeCommentByCommentId = async (comment_id) => {
     // 400 Error: check if comment_id is a number
-    await checkStringIsPositiveInteger(comment_id, 'comments');
+    await checkPrimaryKeyIsPositiveInteger(comment_id, 'comments');
     // 404 Error: check comment_id exists in comments table
     await checkPrimaryKeyValueExists('comment_id', 'comments', comment_id);
     // carry out delete query
-    await db.query(`DELETE FROM comments WHERE comment_id=$1`, [comment_id]);
+    await db.query(`DELETE FROM comments WHERE comment_id=$1;`, [comment_id]);
 }
 
 exports.updateCommentByCommentId = async (comment_id, inc_votes) => {
     // 400 Error: check if comment_id is a number
-    await checkStringIsPositiveInteger(comment_id, 'comments');
+    await checkPrimaryKeyIsPositiveInteger(comment_id, 'comments');
     // 404 Error: check comment_id exists in comments table
     await checkPrimaryKeyValueExists('comment_id', 'comments', comment_id);
 

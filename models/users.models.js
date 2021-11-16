@@ -1,5 +1,5 @@
 const db = require("../db/connection.js");
-const { checkPrimaryKeyValueExists } = require("./utils-models.js");
+const { checkPrimaryKeyValueExists } = require("./model-utils.js");
 
 exports.selectUsers = async () => {
     const { rows: usersResponse } = await db.query(`SELECT * FROM users;`);
