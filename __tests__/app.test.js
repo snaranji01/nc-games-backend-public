@@ -4,10 +4,14 @@ const app = require("../app.js");
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
-const {
-  ascendingCompareFunc,
-  descendingCompareFunc,
-} = require("./compareFunctions.js");
+
+// compare functions for use with jest-sorted
+exports.descendingCompareFunc = (a, b) => {
+  return b - a
+}
+exports.ascendingCompareFunc = (a, b) => {
+  return a - b
+}
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
