@@ -6,10 +6,10 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 
 // compare functions for use with jest-sorted
-exports.descendingCompareFunc = (a, b) => {
+descendingCompareFunc = (a, b) => {
   return b - a
 }
-exports.ascendingCompareFunc = (a, b) => {
+ascendingCompareFunc = (a, b) => {
   return a - b
 }
 
