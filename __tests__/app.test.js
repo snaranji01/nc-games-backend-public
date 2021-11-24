@@ -87,6 +87,7 @@ describe("API", () => {
               { column: "title" },
               { column: "review_id" },
               { column: "category" },
+              { column: "designer" },
               { column: "review_img_url" },
               { column: "created_at" },
               { column: "review_votes" },
