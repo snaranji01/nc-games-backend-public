@@ -67,6 +67,7 @@ exports.selectReviews = async (sort_by, order, category) => {
     "owner",
     "title",
     "review_id",
+    "designer",
     "category",
     "review_img_url",
     "created_at",
