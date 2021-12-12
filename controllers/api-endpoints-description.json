@@ -7,30 +7,337 @@
         }
     },
     "/api/categories": {
-        "HTTP request methods": {
-            "GET": {
-                "description": "Responds with an array of all existing game categories on the 'categories' key",
-                "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/categories",
-                "sample response": {
-                    "categories": [
-                        {
-                            "slug": "euro game",
-                            "description": "Abstact games that involve little luck"
-                        },
-                        {
-                            "slug": "social deduction",
-                            "description": "Players attempt to uncover each other's hidden role"
-                        },
-                        {
-                            "slug": "dexterity",
-                            "description": "Games involving physical skill"
-                        },
-                        {
-                            "slug": "children's games",
-                            "description": "Games suitable for children"
-                        }
-                    ]
+        "GET": {
+            "description": "Responds with an array of all existing game categories",
+            "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/categories",
+            "sample response": {
+                "categories": [
+                    {
+                        "slug": "euro game",
+                        "description": "Abstact games that involve little luck"
+                    },
+                    {
+                        "slug": "social deduction",
+                        "description": "Players attempt to uncover each other's hidden role"
+                    },
+                    {
+                        "slug": "dexterity",
+                        "description": "Games involving physical skill"
+                    },
+                    {
+                        "slug": "children's games",
+                        "description": "Games suitable for children"
+                    }
+                ]
+            }
+        }
+    },
+    "/api/reviews": {
+        "GET": {
+            "description": "Responds with an array of all existing game reviews",
+            "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews",
+            "sample response": {
+                "reviews": [
+                    {
+                        "review_id": 14,
+                        "title": "Velit tempor ullamco amet ipsum dolor voluptate.",
+                        "designer": "Don Keigh",
+                        "owner": "cooljmessy",
+                        "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+                        "review_body": "Nostrud anim cupidatat incididunt officia cupidatat magna. Cillum commodo voluptate laboris id incididunt esse elit ipsum consectetur non elit elit magna. Aliquip sint amet eiusmod magna. Fugiat non ut ex eiusmod elit. Esse anim irure laborum aute ut ad reprehenderit. Veniam laboris dolore mollit mollit in. Cillum in aliquip adipisicing ipsum et dolor veniam qui ut ullamco aliquip in. Dolor fugiat elit laborum elit cupidatat aute qui nostrud. Duis incididunt ea nostrud minim consequat. Reprehenderit mollit cupidatat do culpa aliqua culpa mollit minim eiusmod. Deserunt occaecat ipsum ex ut pariatur eu veniam cillum nulla ex nostrud. Do nostrud amet duis proident nostrud eiusmod occaecat reprehenderit. Quis et cupidatat tempor qui dolor id veniam in sunt ipsum eiusmod. Sint tempor commodo consectetur mollit proident culpa nulla est tempor ullamco tempor aliquip laboris.",
+                        "category": "hidden-roles",
+                        "created_at": "2021-02-05T11:27:26.563Z",
+                        "review_votes": 3,
+                        "comment_count": 0
+                    },
+                    {
+                        "etc": "..."
+                    }
+                ]
+            },
+            "query parameters": {
+                "sort_by": {
+                    "description": "sorts by the specified column. Sorts in descending order by created_at ",
+                    "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews?sort_by=category",
+                    "sample response": {
+                        "reviews": [
+                            {
+                                "review_id": 17,
+                                "title": "Nova Luna; Freak out in a moonage daydream, oh yeah!",
+                                "designer": "Uwe Rosenburg",
+                                "owner": "tickle122",
+                                "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+                                "review_body": "Loosely based around the phases of the moon, this tile placing game is rich in strategy anf makes great use of non-standard turn taking. Nova Luna was one of my favourite nominations for the prestigious Kennerspiel des Jahres in 2020. Sadly it didn't take home the title, but its an intruguing abstract game, certainly one to add to your game shelf.",
+                                "category": "strategy",
+                                "created_at": "1970-01-10T02:56:38.400Z",
+                                "review_votes": 6,
+                                "comment_count": 3
+                            },
+                            {
+                                "review_id": 20,
+                                "title": "Monopoly",
+                                "designer": "Uncredited",
+                                "owner": "grumpy19",
+                                "review_img_url": "https://images.pexels.com/photos/1314435/pexels-photo-1314435.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                                "review_body": "This household classic needs no introduction. Monopoly has been causeing family fallouts for close to 90 years. With numerous special editions and no doubt more still to come almost everyone has played this game, but has anyone ever finished it?",
+                                "category": "strategy",
+                                "created_at": "2020-09-13T15:14:20.877Z",
+                                "review_votes": 3,
+                                "comment_count": 2
+                            },
+                            {
+                                "etc": "..."
+                            }
+                        ]
+                    }
+                },
+                "order": {
+                    "description": "sorts results into either ascending (asc) or descending (desc) order. By defaults, sorts in descending order.",
+                    "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews?order=asc",
+                    "sample response": {
+                        "reviews": [
+                            {
+                                "review_id": 18,
+                                "title": "Reef",
+                                "designer": "Emerson Matsuuchi",
+                                "owner": "tickle122",
+                                "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+                                "review_body": "This game reminds me of the stress-free environment described in a song sung by a crab in the famous film about a mermaid. Plenty of coral collecting, and reef building to keep you entertained ",
+                                "category": "strategy",
+                                "created_at": "1970-01-10T02:56:38.400Z",
+                                "review_votes": 6,
+                                "comment_count": 4
+                            },
+                            {
+                                "review_id": 17,
+                                "title": "Nova Luna; Freak out in a moonage daydream, oh yeah!",
+                                "designer": "Uwe Rosenburg",
+                                "owner": "tickle122",
+                                "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+                                "review_body": "Loosely based around the phases of the moon, this tile placing game is rich in strategy anf makes great use of non-standard turn taking. Nova Luna was one of my favourite nominations for the prestigious Kennerspiel des Jahres in 2020. Sadly it didn't take home the title, but its an intruguing abstract game, certainly one to add to your game shelf.",
+                                "category": "strategy",
+                                "created_at": "1970-01-10T02:56:38.400Z",
+                                "review_votes": 6,
+                                "comment_count": 3
+                            },
+                            {
+                                "etc": "..."
+                            }
+                        ]
+                    }
+                },
+                "category": {
+                    "description": "Filters results to include only the category chosen. By default, all categories are shown.",
+                    "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews?category=strategy",
+                    "sample response": {
+                        "reviews": [
+                            {
+                                "review_id": 15,
+                                "title": "Scrobble, no that's not a typo",
+                                "designer": "Word Smith",
+                                "owner": "jessjelly",
+                                "review_img_url": "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                                "review_body": "You know; the one that looks a lot like Scrabble, and plays a lot like Scrabble, but you have to push the letter tiles out of cardboard becasue that makes it more \"fun\"...  If you're a fan of words you'll love this game regardless, but if you're a hard core word nerd you probably have the original anyway.",
+                                "category": "strategy",
+                                "created_at": "2021-01-22T11:35:05.936Z",
+                                "review_votes": 1,
+                                "comment_count": 2
+                            },
+                            {
+                                "review_id": 1,
+                                "title": "Culture a Love of Agriculture With Agricola",
+                                "designer": "Uwe Rosenberg",
+                                "owner": "tickle122",
+                                "review_img_url": "https://images.pexels.com/photos/4917821/pexels-photo-4917821.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                                "review_body": "You could sum up Agricola with the simple phrase 'Farmyeard Fun' but the mechanics and game play add so much more than that. You'll find yourself torn between breeding pigs, or sowing crops. Its joyeous and rewarding and it makes you think of time spent outside, which is much harder to do these days!",
+                                "category": "strategy",
+                                "created_at": "2021-01-18T10:00:20.514Z",
+                                "review_votes": 1,
+                                "comment_count": 3
+                            },
+                            {
+                                "etc": "..."
+                            }
+                        ]
+                    }
                 }
+            }
+        }
+    },
+    "/api/reviews/:review_id": {
+        "GET": {
+            "description": "Responds with an object containing the data for a single review with the specified review_id",
+            "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews/1",
+            "sample response": {
+                "review": {
+                    "review_id": 1,
+                    "title": "Agricola",
+                    "designer": "Uwe Rosenberg",
+                    "owner": "mallionaire",
+                    "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                    "review_body": "Farmyard fun!",
+                    "category": "euro game",
+                    "created_at": "2021-01-18T10:00:20.514Z",
+                    "review_votes": 1,
+                    "comment_count": 0
+                }
+            }
+        },
+        "PATCH": {
+            "description": "When passed a body of {inc_votes: *number*}, will increment the votes of the review with the specified review_id by the given number",
+            "sample request url": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews/1",
+            "sample request body": "{inc_votes: 1}",
+            "sample response": {
+                "review": {
+                    "review_id": 1,
+                    "title": "Agricola",
+                    "designer": "Uwe Rosenberg",
+                    "owner": "mallionaire",
+                    "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                    "review_body": "Farmyard fun!",
+                    "category": "euro game",
+                    "created_at": "2021-01-18T10:00:20.514Z",
+                    "review_votes": 11,
+                    "comment_count": 0
+                }
+            }
+        }
+    },
+    "/api/reviews/review:id/comments": {
+        "GET": {
+            "description": "Responds with an array of comment data objects for the specified game review",
+            "sample request url": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews/2/comments",
+            "sample response": {
+                "reviewComments": [
+                    {
+                        "comment_id": 1,
+                        "body": "I loved this game too!",
+                        "comment_votes": 16,
+                        "author": "happyamy2016",
+                        "review_id": 2,
+                        "created_at": "2017-11-22T12:36:03.389Z"
+                    },
+                    {
+                        "comment_id": 4,
+                        "body": "EPIC board game!",
+                        "comment_votes": 16,
+                        "author": "tickle122",
+                        "review_id": 2,
+                        "created_at": "2017-11-22T12:36:03.389Z"
+                    },
+                    {
+                        "comment_id": 10,
+                        "body": "Ex id ipsum dolore non cillum anim sint duis nisi anim deserunt nisi minim.",
+                        "comment_votes": 9,
+                        "author": "grumpy19",
+                        "review_id": 2,
+                        "created_at": "2021-03-27T14:15:31.110Z"
+                    },
+                    {
+                        "comment_id": 62,
+                        "body": "test comment 123",
+                        "comment_votes": 0,
+                        "author": "grumpy19",
+                        "review_id": 2,
+                        "created_at": "2021-11-25T00:53:30.333Z"
+                    }
+                ]
+            }
+        },
+        "POST": {
+            "description": "When passed a request body including a username and comment body, creates a comment for the review with specified review_id",
+            "sample request": {
+                "url": "https://nc-games-backend-snaranji01.herokuapp.com/api/reviews/1/comments",
+                "body": {
+                    "username": "mallionaire",
+                    "body": "Great review!"
+                }
+            },
+            "sample response": {
+                "newReviewComment": {
+                    "review_id": 1,
+                    "title": "Agricola",
+                    "designer": "Uwe Rosenberg",
+                    "owner": "mallionaire",
+                    "review_img_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                    "review_body": "Farmyard fun!",
+                    "category": "euro game",
+                    "created_at": "2021-01-18T10:00:20.514Z",
+                    "review_votes": 11,
+                    "comment_count": 0
+                }
+            }
+        }
+    },
+    "/api/comments/:comment_id": {
+        "DELETE": {
+            "description": "Deletes the review comment with provided comment_id. Doesn't return a response.",
+            "sample request": "https://nc-games-backend-snaranji01.herokuapp.com/api/comments/1"
+        },
+        "PATCH": {
+            "description": "When passed an object of {inc_votes: *number*}, increments the number of upvotes on the specified comment by *number*",
+            "sample request": {
+                "url": "https://nc-games-backend-snaranji01.herokuapp.com/api/comments/1",
+                "body": "{ inc_votes: 3 }"
+            },
+            "sample response": {
+                "updatedComment": {
+                    "comment_id": 1,
+                    "body": "I loved this game too!",
+                    "comment_votes": 19,
+                    "author": "bainesface",
+                    "review_id": 2,
+                    "created_at": "2017-11-22T12:43:33.389Z",
+                }
+            }
+        }
+    },
+    "/api/users": {
+        "description": "Returns an array of user objects, for all users",
+        "example request": "https://nc-games-backend-snaranji01.herokuapp.com/api/users",
+        "example response": {
+            "users": [
+                {
+                    "username": "tickle122",
+                    "name": "Tom Tickle",
+                    "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+                },
+                {
+                    "username": "grumpy19",
+                    "name": "Paul Grump",
+                    "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+                },
+                {
+                    "username": "happyamy2016",
+                    "name": "Amy Happy",
+                    "avatar_url": "https://vignette1.wikia.nocookie.net/mrmen/images/7/7f/Mr_Happy.jpg/revision/latest?cb=20140102171729"
+                },
+                {
+                    "username": "cooljmessy",
+                    "name": "Peter Messy",
+                    "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/1/1a/MR_MESSY_4A.jpg/revision/latest/scale-to-width-down/250?cb=20170730171002"
+                },
+                {
+                    "username": "weegembump",
+                    "name": "Gemma Bump",
+                    "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/7e/MrMen-Bump.png/revision/latest?cb=20180123225553"
+                },
+                {
+                    "username": "jessjelly",
+                    "name": "Jess Jelly",
+                    "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/4/4f/MR_JELLY_4A.jpg/revision/latest?cb=20180104121141"
+                }
+            ]
+        }
+    },
+    "/api/users/:username": {
+        "description": "Returns a user object for username passed",
+        "example request": "https://nc-games-backend-snaranji01.herokuapp.com/api/users/mallionaire",
+        "example response": {
+            "user": {
+                "username": "mallionaire",
+                "name": "haz",
+                "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
             }
         }
     }
