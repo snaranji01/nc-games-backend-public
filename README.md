@@ -1,20 +1,16 @@
 # Northcoders House of Games API 
 ## Project Summary 
-A REST API hosted online via Heroku for a hypothetical game review website, Northcoders House of Games! It allows interaction with the database holding the website content and user information. New data entries can be created, existing data can be retrieved (in JSON format), existing data can be updated, and existing data can be deleted. \
-Information on all available endpoints can be found at https://nc-games-backend-snaranji01.herokuapp.com/api. Each endpoint has a short description, and an example request and response.
+A REST API hosted online via Heroku for a game review website, Northcoders House of Games. It allows interaction with the database holding website content and user information. New data entries can be created, existing data can be retrieved (in JSON format), existing data can be updated, and existing data can be deleted. \
+An overview of available endpoints can be found at https://nc-games-backend-public.herokuapp.com/api. Each endpoint description includes a short description, an example request and an example response.
 ## Hosted at
 https://nc-games-backend-snaranji01.herokuapp.com/api
 
 ## Usage Instructions
-
 ### Clone using git:
 ```git clone https://github.com/snaranji01/be-nc-games.git```
-
-### npm scripts
-expand here...
-
-### Format of .env.development and .env.test files   
-
+### Install dependencies
+```npm install```
+### Format your .env.development and .env.test files
 Your .env.test file should include:   
 
 * ```PGDATABASE``` : Your test Database name
@@ -24,7 +20,14 @@ Your .env.development file should include:
 
 * ```PGDATABASE``` : Your development Database name
 * ```PGPASSWORD``` : Your development Database password
-
+### Initialise local test and development databases
+```npm run setup-dbs```
+### Seed test database and run all tests in __tests__ file
+```npm test```
+### Seed development database
+```npm run seed```
+### Start development server locally
+```npm run dev-server```
 ## My version information
 |                       | Version                                                                                                                   |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------|
