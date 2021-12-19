@@ -1,13 +1,13 @@
 # Northcoders House of Games API 
 ## Project Summary 
 A REST API hosted online via Heroku for a game review website, Northcoders House of Games. It allows interaction with the database holding website content and user information. New data entries can be created, existing data can be retrieved (in JSON format), existing data can be updated, and existing data can be deleted. \
-An overview of available endpoints can be found at https://nc-games-backend-public.herokuapp.com/api. Each endpoint description includes a short description, an example request and an example response.
+An overview of available endpoints can be found at https://nc-games-backend-snaranji01.herokuapp.com/api. Each endpoint description includes a short description, an example request and an example response.
 ## Hosted at
 https://nc-games-backend-snaranji01.herokuapp.com/api
 
 ## Usage Instructions
 ### Clone using git:
-```git clone https://github.com/snaranji01/be-nc-games.git```
+```git clone https://github.com/snaranji01/nc-games-backend-public```
 ### Install dependencies
 ```npm install```
 ### Format your .env.development and .env.test files
