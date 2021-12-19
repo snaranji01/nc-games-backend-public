@@ -18,15 +18,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/northcoders/be-nc-games.git"
+    "url": "git+https://github.com/northcoders/nc-games-backend-public.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/northcoders/be-nc-games/issues"
+    "url": "https://github.com/northcoders/nc-games-backend-public/issues"
   },
-  "homepage": "https://github.com/northcoders/be-nc-games#readme",
+  "homepage": "https://github.com/northcoders/nc-games-backend-public#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
